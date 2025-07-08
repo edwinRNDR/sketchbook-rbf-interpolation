@@ -1,4 +1,4 @@
-rootProject.name = "openrndr-template"
+rootProject.name = "sketchbook-rbf-interpolation"
 
 pluginManagement {
     repositories {

@@ -69,7 +69,7 @@ val orxFeatures = setOf<String>(
 //  "orx-text-writer",
 //  "orx-time-operators",
 //  "orx-timer",
-//  "orx-triangulation",
+  "orx-triangulation",
 //  "orx-turtle",
     "orx-video-profiles",
     "orx-view-box",
@@ -114,10 +114,11 @@ plugins {
 repositories {
     mavenCentral()
     mavenLocal()
+    maven { url = uri("https://jitpack.io") }
 }
 
 dependencies {
-
+    implementation("com.github.tag-bio:umap-java:master")
 //    implementation(libs.jsoup)
 //    implementation(libs.csv)
 
