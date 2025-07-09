@@ -37,7 +37,8 @@ class Rbf2DInterpolator(
     val points: List<Vector2>,
     val weights: Array<DoubleArray>,
     val values: Array<DoubleArray>,
-    val rbf: (Vector2, Vector2) -> Double
+    val rbf: (Vector2, Vector2) -> Double,
+    val mean: DoubleArray
 ) {
     fun interpolate(x: Vector2): DoubleArray {
         val c = DoubleArray(values[0].size)
@@ -46,6 +47,9 @@ class Rbf2DInterpolator(
             for (i in 0 until c.size) {
                 c[i] += weights[j][i] * r
             }
+        }
+        for (i in 0 until c.size) {
+            c[i] += mean[i]
         }
         return c
     }
@@ -90,7 +94,9 @@ fun rbfInterpolator(
             vmat[j, i] = values[j][i] + if (j == i) smoothing else 0.0
         }
     }
+    val mean = vmat.columnMean()
+    val vwmat = vmat - mean
 
-    val wmat = imat * vmat
-    return Rbf2DInterpolator(points, wmat.data, values, rbf)
+    val wmat = imat * vwmat
+    return Rbf2DInterpolator(points, wmat.data, values, rbf, mean.data[0])
 }

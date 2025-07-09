@@ -75,8 +75,6 @@ fun main() {
                                 stroke = null
                                 rectangle(p + Vector2(i * 2.0, 0.0), 1.0, -v * 10.0)
                                 //drawer.lineSegment(p + Vector2(i * 2.0, 0.0), p + Vector2(i * 2.0, -v*10.0))
-
-
                             }
                         }
                     }

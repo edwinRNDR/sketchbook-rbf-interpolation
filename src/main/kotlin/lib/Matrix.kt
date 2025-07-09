@@ -119,3 +119,42 @@ class Matrix(val rows: Int, val cols: Int) {
         return multiply(this, other)
     }
 }
+
+fun Matrix.columnMean(): Matrix {
+    val means = DoubleArray(cols)
+
+    for (j in 0 until rows) {
+        for (i in 0 until cols) {
+            means[i] += this[j, i]
+        }
+
+    }
+    for (i in 0 until cols) {
+        means[i] /= rows.toDouble()
+    }
+    val result = Matrix.zeros(1, cols)
+    for (i in 0 until cols) {
+        result[0, i] = means[i]
+    }
+    return result
+}
+
+operator fun Matrix.minus(other: Matrix): Matrix {
+    val result = Matrix.zeros(rows, cols)
+    if (cols == other.cols && other.rows == 1) {
+        for (j in 0 until rows) {
+            for (i in 0 until cols) {
+                result[j, i] = this[j, i] - other[0, i]
+            }
+        }
+    } else if (cols == other.cols && rows == other.rows) {
+        for (j in 0 until rows) {
+            for (i in 0 until cols) {
+                result[j, i] = this[j, i] - other[j, i]
+            }
+        }
+    } else {
+        error("Cannot subtract matrices of different dimensions")
+    }
+    return result
+}

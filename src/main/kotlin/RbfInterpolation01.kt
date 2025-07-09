@@ -1,7 +1,9 @@
 import org.openrndr.application
 import org.openrndr.math.Vector2
 import lib.Matrix
+import lib.columnMean
 import lib.invertMatrixCholesky
+import lib.minus
 import org.openrndr.color.ColorRGBa
 import org.openrndr.draw.shadeStyle
 import org.openrndr.extensions.Screenshots
@@ -28,7 +30,7 @@ fun main() {
             height = 720
         }
         program {
-            val scale = 0.000008
+            val scale = 0.00004
 
             // A Gaussian RBG
             fun rbf(p0: Vector2, p1: Vector2): Double {
@@ -49,17 +51,22 @@ fun main() {
             // invert the rbf matrix using Cholesky decomposition
             val imat = invertMatrixCholesky(rmat)
 
-            val cmat = Matrix(pts.size, 3)
+            val ogcmat = Matrix(pts.size, 3)
 
             val colors = (0 until pts.size).map {
-                ColorRGBa.PINK.shiftHue<OKHSV>(Double.uniform(-45.0, 45.0)).shadeLuminosity<OKLab>(Double.uniform(0.15, 1.0))
+                ColorRGBa.PINK.shiftHue<OKHSV>(Double.uniform(-180.0, 45.0)).shadeLuminosity<OKLab>(Double.uniform(0.7, 1.0))
             }
             for (j in pts.indices) {
                 val c = colors[j]
-                cmat[j, 0] = c.r
-                cmat[j, 1] = c.g
-                cmat[j, 2] = c.b
+                ogcmat[j, 0] = c.r
+                ogcmat[j, 1] = c.g
+                ogcmat[j, 2] = c.b
             }
+
+            val mean = ogcmat.columnMean()
+            println(mean.data[0].joinToString(", "))
+            val cmat = ogcmat - mean
+
 
             // find the weights by multiplying colors by the rbf inverse
             val wmat = imat * cmat
@@ -73,7 +80,7 @@ fun main() {
                     |float d = distance(p, q);
                     |return exp(-d*d*$scale); }""".trimMargin()
                 fragmentTransform = """
-                    vec3 c = vec3(0.0);
+                    vec3 c = p_mean;
                     for (int i=0; i<p_weights_SIZE; ++i) {
                     
                         vec2 p = c_boundsPosition.xy;
@@ -90,6 +97,7 @@ fun main() {
                 """.trimIndent()
                 parameter("weights", weights)
                 parameter("points", pts.toTypedArray())
+                parameter("mean", Vector3(mean[0, 0], mean[0, 1], mean[0, 2]))
             }
             extend(Screenshots())
             extend(Camera2D())
