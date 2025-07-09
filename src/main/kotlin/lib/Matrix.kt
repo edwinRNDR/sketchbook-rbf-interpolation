@@ -1,5 +1,12 @@
 package lib
 
+/**
+ * Represents a two-dimensional matrix with support for basic operations such as indexing,
+ * copying, and mathematical computations.
+ *
+ * @property rows The number of rows in the matrix.
+ * @property cols The number of columns in the matrix.
+ */
 class Matrix(val rows: Int, val cols: Int) {
     val data = Array(rows) { DoubleArray(cols) }
 
@@ -111,5 +118,4 @@ class Matrix(val rows: Int, val cols: Int) {
     operator fun times(other: Matrix): Matrix {
         return multiply(this, other)
     }
-
 }
