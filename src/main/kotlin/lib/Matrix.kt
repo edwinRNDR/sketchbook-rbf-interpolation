@@ -25,6 +25,23 @@ class Matrix(val rows: Int, val cols: Int) {
         return result
     }
 
+    /**
+     * Returns a new matrix that is the transpose of this matrix.
+     *
+     * The transpose of a matrix is obtained by flipping the matrix over its diagonal,
+     * effectively switching the row and column indices of each element.
+     *
+     * @return A new matrix representing the transpose of the current matrix.
+     */
+    fun transposed() : Matrix {
+        val result = Matrix(cols, rows)
+        for (i in 0 until rows) {
+            for (j in 0 until cols) {
+                result[j, i] = this[i, j]
+            }
+        }
+        return result
+    }
 
     /**
      * Checks if the given matrix is symmetric within a specified tolerance.
